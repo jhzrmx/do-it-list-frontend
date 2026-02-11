@@ -1,13 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
+import Home from "./pages/Home";
 
-function Home() {
-  return (
-    <div>
-      <h1>React Router DOM Setup</h1>
-    </div>
-  );
-}
-function App() {
+const App = () => {
   const router = createBrowserRouter([
     {
       path: "/",
@@ -19,6 +13,6 @@ function App() {
       <RouterProvider router={router} />
     </div>
   );
-}
+};
 
 export default App;
