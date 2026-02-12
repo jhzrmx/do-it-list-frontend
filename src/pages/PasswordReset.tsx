@@ -1,29 +1,25 @@
 import InputField from "@/components/InputField";
 import PrimaryButton from "@/components/PrimaryButton";
 import { useState } from "react";
-import { MdEmail, MdKey, MdPerson, MdVerifiedUser } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { MdLock, MdVerifiedUser } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 
-const SignUp = () => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+const PasswordReset = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSignUp = (e: React.SubmitEvent) => {
+  const handleResetPassword = (e: React.SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
-    console.log(`Full Name: ${fullName}`);
-    console.log(`Email: ${email}`);
     console.log(`Password: ${password}`);
     console.log(`Confirm Password: ${confirmPassword}`);
     console.log(`Loading: ${isLoading}`);
     setLoading(false);
-    navigate("/tc");
+    navigate("/todo");
   };
 
   return (
@@ -38,28 +34,14 @@ const SignUp = () => {
               </h1>
             </div>
             <div className="w-full bg-semi-primary rounded-4xl p-6 mt-8">
-              <h1 className="font-bold text-center text-xl mb-6">Sign Up</h1>
-              <form onSubmit={(e) => handleSignUp(e)}>
+              <h1 className="font-bold text-center text-xl mb-6">
+                Password Reset
+              </h1>
+              <form onSubmit={(e) => handleResetPassword(e)}>
                 <InputField
-                  icon={<MdPerson size={24} />}
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                />
-                <InputField
-                  icon={<MdEmail size={24} />}
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <InputField
-                  icon={<MdKey size={24} className="rotate-90" />}
+                  icon={<MdLock size={24} />}
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Enter new password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -67,19 +49,13 @@ const SignUp = () => {
                 <InputField
                   icon={<MdVerifiedUser size={24} />}
                   type="password"
-                  placeholder="Confirm password"
+                  placeholder="Confirm new password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
-                <PrimaryButton type="submit" content="Create Account" />
+                <PrimaryButton type="submit" content="Reset Password" />
               </form>
-              <div className="w-full flex items-center justify-center mt-4 text-sm">
-                <p>Already have an account?</p>
-                <Link to="/login" className="font-bold ml-1 cursor-pointer">
-                  Sign In!
-                </Link>
-              </div>
             </div>
           </div>
         </div>
@@ -88,4 +64,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default PasswordReset;
