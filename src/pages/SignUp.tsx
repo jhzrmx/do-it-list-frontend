@@ -69,7 +69,7 @@ const SignUp = () => {
                 />
                 <PrimaryButton type="submit" content="Create Account" />
               </form>
-              <div className="w-full flex items-center justify-center text-sm">
+              <div className="w-full flex items-center justify-center mt-2 text-sm">
                 <p>Already have an account?</p>
                 <Link to="/login" className="font-bold ml-1 cursor-pointer">
                   Sign In!

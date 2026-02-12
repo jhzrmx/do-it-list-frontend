@@ -13,7 +13,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ resetErrorBoundary }) => {
       <h1 className="text-4xl font-bold text-primary mb-4">
         Unexpected Error!
       </h1>
-      <p className="text-semi-primary mb-2">
+      <p className="text-sm text-semi-primary mb-2">
         Oops! Something went wrong in the application.
       </p>
 
@@ -25,13 +25,13 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ resetErrorBoundary }) => {
 
       <div className="flex gap-4">
         {resetErrorBoundary && (
-          <button className="px-4 py-2 bg-primary text-white rounded hover:bg-accent transition">
+          <button className="px-4 py-2 text-sm bg-primary text-white rounded hover:bg-semi-primary transition">
             Retry
           </button>
         )}
         <Link
           to="/"
-          className="px-4 py-2 bg-primary text-white rounded hover:bg-semi-primary transition"
+          className="px-4 py-2 text-sm bg-primary text-white rounded hover:bg-semi-primary transition"
         >
           Go Home
         </Link>
