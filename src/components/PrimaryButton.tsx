@@ -1,14 +1,24 @@
-const Button = () => {
+import type { ButtonHTMLAttributes } from "react";
+
+interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  content: string;
+}
+
+const PrimaryButton = ({
+  content,
+  type = "button",
+  className = "",
+  ...rest
+}: PrimaryButtonProps) => {
   return (
-    <>
-      <button
-        onClick={() => {}}
-        className="bg-[#FBEF76] py-2 px-3 rounded-lg hover:bg-[#E3D86C] m-2 hover:cursor-pointer"
-      >
-        Button here
-      </button>
-    </>
+    <button
+      type={type}
+      className={`w-full bg-tertiary rounded-2xl font-bold py-2 my-2 hover:opacity-85 hover:cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
+      {...rest}
+    >
+      {content}
+    </button>
   );
 };
 
-export default Button;
+export default PrimaryButton;
