@@ -59,8 +59,9 @@ const Todos = () => {
     if (!title.trim()) return;
     setLoading(true);
     try {
-      await axiosInstance.post("/todos", { title, priority });
-      getTodos();
+      const response = await axiosInstance.post("/todos", { title, priority });
+      const newTodo = response.data;
+      setTodos((prev) => [newTodo, ...prev]);
       toast.success("Todo added successfully");
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
@@ -75,7 +76,11 @@ const Todos = () => {
     setLoading(true);
     try {
       await axiosInstance.put(`/todos/${id}`, updatedFields);
-      getTodos();
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo._id === id ? { ...todo, ...updatedFields } : todo,
+        ),
+      );
       toast.success("Todo updated successfully");
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
@@ -89,15 +94,21 @@ const Todos = () => {
   };
 
   const todoDone = (id: string) => {
-    const todo = todos.find((t) => t._id === id);
-    if (todo) {
-      updateTodo(id, { completed: !todo.completed });
-    }
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo._id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
+    updateTodo(id, { completed: !todos.find((t) => t._id === id)?.completed });
   };
 
   const todoClickEdit = (id: string) => {
-    const newTask = prompt("Edit Todo", todos.find((t) => t._id === id)?.title);
-    if (newTask !== null) {
+    const todo = todos.find((t) => t._id === id);
+    const newTask = prompt("Edit Todo", todo?.title);
+    if (newTask !== null && todo) {
+      setTodos((prev) =>
+        prev.map((t) => (t._id === id ? { ...t, title: newTask } : t)),
+      );
       updateTodo(id, { title: newTask });
     }
   };
