@@ -1,6 +1,9 @@
+import axiosInstance from "@/axios/axios-instance";
 import InputField from "@/components/InputField";
 import PrimaryButton from "@/components/PrimaryButton";
+import type { AxiosError } from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import { MdEmail, MdKey } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -11,13 +14,33 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setLoading] = useState(false);
 
-  const handleSignIn = async (e: React.SubmitEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    console.log(`Email: ${email}`);
-    console.log(`Password: ${password}`);
-    console.log(`Loading: ${isLoading}`);
-    setLoading(false);
+
+    try {
+      /*const response =*/ await axiosInstance.post("/auth/login", {
+        email,
+        password,
+      });
+
+      // toast.success(`Welcome back, ${response.data.user.name}!`);
+      // Already stored as cookie to prevent XSS
+      // localStorage.setItem("token", response.data.token);
+      window.location.href = "/";
+    } catch (err) {
+      const axiosError = err as AxiosError<{ message: string }>;
+
+      if (axiosError.response?.data?.message) {
+        toast.error(axiosError.response.data.message);
+      } else {
+        toast.error("Login failed! Please try again.");
+      }
+
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,7 +78,12 @@ const Login = () => {
                     Forgot password?
                   </Link>
                 </div>
-                <PrimaryButton type="submit" content="Sign In" />
+                <PrimaryButton
+                  type="submit"
+                  content="Sign In"
+                  isLoading={isLoading}
+                  loadingText="Signing In..."
+                />
               </form>
               <p className="w-full m-auto text-center my-2">OR</p>
               <button className="w-full bg-secondary rounded-xl flex items-center hover:cursor-pointer hover:opacity-85 px-4 py-2 my-4">

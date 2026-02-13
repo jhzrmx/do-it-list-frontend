@@ -8,7 +8,7 @@ const Home = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate("/login");
-    }, 1500);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [navigate]);

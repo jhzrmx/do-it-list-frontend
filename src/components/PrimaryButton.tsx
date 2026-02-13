@@ -1,13 +1,20 @@
 import type { ButtonHTMLAttributes } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   content: string;
+  loadingText?: string;
+  isLoading?: boolean;
+  loadingIcon?: React.ReactNode;
 }
 
 const PrimaryButton = ({
   icon,
   content,
+  loadingText,
+  isLoading = false,
+  loadingIcon,
   type = "button",
   className = "",
   ...rest
@@ -15,13 +22,32 @@ const PrimaryButton = ({
   return (
     <button
       type={type}
-      className={` w-full bg-tertiary rounded-2xl font-bold py-2 my-2 hover:opacity-85 hover:cursor-pointer disabled:opacity-60  disabled:cursor-not-allowed flex items-center flex-nowrap justify-center
+      disabled={isLoading || rest.disabled}
+      className={`
+        w-full bg-tertiary rounded-2xl font-bold py-2 my-2
+        hover:opacity-85 hover:cursor-pointer
+        disabled:opacity-60 disabled:cursor-not-allowed
+        flex items-center flex-nowrap justify-center
         ${className}
       `}
       {...rest}
     >
-      {icon && <span className="mr-1 flex-none">{icon}</span>}
-      <span className="whitespace-nowrap">{content}</span>
+      {(isLoading
+        ? (loadingIcon ?? (
+            <AiOutlineLoading3Quarters className="animate-spin" />
+          ))
+        : icon) && (
+        <span className="mr-1 flex-none">
+          {isLoading
+            ? (loadingIcon ?? (
+                <AiOutlineLoading3Quarters className="animate-spin" />
+              ))
+            : icon}
+        </span>
+      )}
+      <span className="whitespace-nowrap">
+        {isLoading ? loadingText || "Loading..." : content}
+      </span>
     </button>
   );
 };

@@ -1,6 +1,9 @@
+import axiosInstance from "@/axios/axios-instance";
 import InputField from "@/components/InputField";
 import PrimaryButton from "@/components/PrimaryButton";
+import type { AxiosError } from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { MdEmail, MdKey, MdPerson, MdVerifiedUser } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
@@ -14,16 +17,40 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const handleSignUp = (e: React.SubmitEvent) => {
+  const handleSignUp = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
-    console.log(`Full Name: ${fullName}`);
-    console.log(`Email: ${email}`);
-    console.log(`Password: ${password}`);
-    console.log(`Confirm Password: ${confirmPassword}`);
-    console.log(`Loading: ${isLoading}`);
-    setLoading(false);
-    navigate("/tc");
+
+    if (password != confirmPassword) {
+      toast.error("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      /*const response =*/ await axiosInstance.post("/auth/signup", {
+        fullName,
+        email,
+        password,
+      });
+
+      toast.success("Account creating successful");
+      // Already stored as cookie to prevent XSS
+      // localStorage.setItem("token", response.data.token);
+      navigate("/tc");
+    } catch (err) {
+      const axiosError = err as AxiosError<{ message: string }>;
+
+      if (axiosError.response?.data?.message) {
+        toast.error(axiosError.response.data.message);
+      } else {
+        toast.error("Login failed! Please try again.");
+      }
+
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -72,7 +99,12 @@ const SignUp = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
-                <PrimaryButton type="submit" content="Create Account" />
+                <PrimaryButton
+                  type="submit"
+                  content="Create Account"
+                  isLoading={isLoading}
+                  loadingText="Creating..."
+                />
               </form>
               <div className="w-full flex items-center justify-center mt-4 text-sm">
                 <p>Already have an account?</p>

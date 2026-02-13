@@ -1,12 +1,10 @@
 import PrimaryButton from "@/components/PrimaryButton";
 import TermsContent from "@/components/TermsContent";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 
 const TermsAndCond = () => {
   const [canAccept, setCanAccept] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <div className="w-full h-dvh bg-primary flex items-center justify-center">
@@ -28,7 +26,7 @@ const TermsAndCond = () => {
             />
             <PrimaryButton
               content="Accept"
-              onClick={() => navigate("/todo")}
+              onClick={() => (window.location.href = "/")}
               disabled={!canAccept}
             />
           </div>

@@ -1,4 +1,8 @@
+import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import NotFound from "./pages/404";
 import Error from "./pages/Error";
 import ForgetPassword from "./pages/ForgetPassword";
@@ -8,8 +12,15 @@ import PasswordReset from "./pages/PasswordReset";
 import SignUp from "./pages/SignUp";
 import TermsAndCond from "./pages/TermsAndCond";
 import Todos from "./pages/Todos";
+import { useAuthStore } from "./stores/auth.store";
 
 const App = () => {
+  const { checkAuth } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -17,18 +28,31 @@ const App = () => {
       errorElement: <Error />,
       children: [
         { path: "/", Component: Home },
-        { path: "/login", Component: Login },
-        { path: "/signup", Component: SignUp },
         { path: "/tc", Component: TermsAndCond },
         { path: "/forgot-password", Component: ForgetPassword },
         { path: "/password-reset", Component: PasswordReset },
-        { path: "/todo", Component: Todos },
+
+        {
+          element: <ProtectedRoute />,
+          children: [{ path: "/todo", Component: Todos }],
+        },
+
+        {
+          element: <PublicOnlyRoute />,
+          children: [
+            { path: "/login", Component: Login },
+            { path: "/signup", Component: SignUp },
+          ],
+        },
+
         { path: "*", Component: NotFound },
       ],
     },
   ]);
+
   return (
     <div>
+      <Toaster position="top-center" reverseOrder={false} />
       <RouterProvider router={router} />
     </div>
   );
