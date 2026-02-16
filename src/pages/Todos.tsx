@@ -55,7 +55,6 @@ const Todos = () => {
 
       if (node) observerRef.current.observe(node);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [isLoading, isFetchingMore, hasMore, nextCursor, debouncedSearchText],
   );
 
