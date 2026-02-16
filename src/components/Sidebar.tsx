@@ -1,10 +1,16 @@
-import axiosInstance from "@/axios/axios-instance";
+import {
+  default as AboutModal,
+  default as LogoutModal,
+  default as TCModal,
+} from "@/components/Modal";
 import { useAuthStore } from "@/stores/auth.store";
 import { AxiosError } from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { FaRegCircleUser } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 import PrimaryButton from "./PrimaryButton";
+import TermsContent from "./TermsContent";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -12,14 +18,16 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-  const { user } = useAuthStore();
-  const [isLoading, setLoading] = useState(false);
+  const { user, onLogout } = useAuthStore();
+  const navigate = useNavigate();
+  const [isTCModalOpen, setTCModalOpen] = useState<boolean>(false);
+  const [isAboutModalOpen, setAboutModalOpen] = useState<boolean>(false);
+  const [isLogoutModalOpen, setLogoutModalOpen] = useState<boolean>(false);
 
   const logout = async () => {
-    setLoading(true);
+    setLogoutModalOpen(false);
     try {
-      await axiosInstance.post("/auth/logout");
-
+      onLogout();
       toast.success("Logout successful");
       window.location.href = "/";
     } catch (err) {
@@ -28,17 +36,57 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       if (axiosError.response?.data?.message) {
         toast.error(axiosError.response.data.message);
       } else {
-        toast.error("Login failed! Please try again.");
+        toast.error("Logout failed! Please try again.");
       }
-
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <>
+      <TCModal isOpen={isTCModalOpen} onClose={() => setTCModalOpen(false)}>
+        <div className="p-6 text-center">
+          <h2 className="text-xl font-bold my-4">Terms and Conditions</h2>
+          <TermsContent />
+        </div>
+      </TCModal>
+
+      <AboutModal
+        isOpen={isAboutModalOpen}
+        onClose={() => setAboutModalOpen(false)}
+      >
+        <div className="p-6 text-center">
+          <h2 className="text-xl font-bold my-4">About Do it List!</h2>
+          <div className="my-12 text-sm">Nothing to display right now</div>
+          <PrimaryButton
+            content="OK"
+            onClick={() => setAboutModalOpen(false)}
+            className="text-sm cursor-pointer"
+          />
+        </div>
+      </AboutModal>
+
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+      >
+        <div className="p-6 text-center">
+          <h2 className="text-xl font-bold my-4">Logout?</h2>
+          <div className="my-12 text-sm">
+            You can login to your account at anytime
+          </div>
+          <PrimaryButton
+            content="Logout"
+            isNegative={true}
+            onClick={() => logout()}
+          />
+          <PrimaryButton
+            content="Cancel"
+            onClick={() => setLogoutModalOpen(false)}
+          />
+        </div>
+      </LogoutModal>
+
       <div
         className={`fixed inset-0 bg-black/40 transition-opacity duration-300 z-40 ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
@@ -58,21 +106,38 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </h2>
         </div>
 
-        <div className="px-6 space-y-6 text-sm font-medium">
-          <p className="cursor-pointer hover:text-red-400">My Todo</p>
-          <p className="cursor-pointer hover:text-red-400">Edit Profile</p>
-          <p className="cursor-pointer hover:text-red-400">
+        <div className="px-6 space-y-6 text-sm font-bold">
+          <button
+            onClick={() => navigate("/todo")}
+            className="w-full text-left cursor-pointer transition hover:text-primary"
+          >
+            My Todo
+          </button>
+          <button
+            onClick={() => navigate("/profile")}
+            className="w-full text-left cursor-pointer transition hover:text-primary"
+          >
+            Edit Profile
+          </button>
+          <button
+            onClick={() => setTCModalOpen(true)}
+            className="w-full text-left cursor-pointer transition hover:text-primary"
+          >
             View Terms and Conditions
-          </p>
-          <p className="cursor-pointer hover:text-red-400">About Do it list!</p>
+          </button>
+          <button
+            onClick={() => setAboutModalOpen(true)}
+            className="w-full text-left cursor-pointer transition hover:text-primary"
+          >
+            About Do it list!
+          </button>
         </div>
 
-        <div className="absolute bottom-10 left-0 w-full px-6">
+        <div className="absolute bottom-4 left-0 w-full px-6">
           <PrimaryButton
             content="Logout"
-            loadingText="Logging out..."
-            onClick={logout}
-            isLoading={isLoading}
+            className="shadow-md"
+            onClick={() => setLogoutModalOpen(true)}
           />
         </div>
       </div>

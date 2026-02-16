@@ -24,7 +24,7 @@ const TodoContainer: React.FC<TodoContainerProps> = ({
   onDelete,
 }) => {
   return (
-    <div className="px-4 w-full m-2">
+    <div className="px-4 w-full my-3">
       <div className="w-full bg-gray-100 rounded-xl shadow-sm flex items-center justify-between px-4 py-3 relative overflow-hidden">
         <div
           className={`absolute left-0 top-0 h-full w-2 ${priorityColorMap[todo.priority]}`}

@@ -11,9 +11,9 @@ interface AuthState {
   user: User | null;
   isCheckingAuth: boolean;
   checkAuth: () => Promise<void>;
-  logout: () => Promise<void>;
+  onLogout: () => Promise<void>;
+  onUpdateUser: (data: Partial<User>) => void;
 }
-
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
@@ -21,7 +21,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const res = await axiosInstance.get("/auth/me", {
+      const res = await axiosInstance.get("/me", {
         withCredentials: true,
       });
       set({ user: res.data.user });
@@ -32,8 +32,13 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  logout: async () => {
+  onLogout: async () => {
     await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
     set({ user: null });
   },
+
+  onUpdateUser: (data) =>
+    set((state) => ({
+      user: state.user ? { ...state.user, ...data } : null,
+    })),
 }));

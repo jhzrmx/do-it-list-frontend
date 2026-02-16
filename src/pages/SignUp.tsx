@@ -4,16 +4,16 @@ import PrimaryButton from "@/components/PrimaryButton";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { MdEmail, MdKey, MdPerson, MdVerifiedUser } from "react-icons/md";
+import { MdEmail, MdLock, MdPerson, MdVerifiedUser } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 
 const SignUp = () => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setLoading] = useState(false);
+  const [fullName, setFullName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -28,25 +28,20 @@ const SignUp = () => {
     }
 
     try {
-      /*const response =*/ await axiosInstance.post("/auth/signup", {
+      await axiosInstance.post("/auth/signup", {
         fullName,
         email,
         password,
       });
 
-      toast.success("Account creating successful");
-      // Already stored as cookie to prevent XSS
-      // localStorage.setItem("token", response.data.token);
+      toast.success("Account creation successful");
       navigate("/tc");
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-
-      if (axiosError.response?.data?.message) {
-        toast.error(axiosError.response.data.message);
-      } else {
-        toast.error("Login failed! Please try again.");
-      }
-
+      toast.error(
+        axiosError.response?.data?.message ||
+          "Account creation failed! Please try again.",
+      );
       console.error(err);
     } finally {
       setLoading(false);
@@ -72,7 +67,7 @@ const SignUp = () => {
                   type="text"
                   placeholder="Enter your full name"
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  onChange={(e) => setFullName(e.target.value as string)}
                   required
                 />
                 <InputField
@@ -80,15 +75,15 @@ const SignUp = () => {
                   type="email"
                   placeholder="Enter your email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value as string)}
                   required
                 />
                 <InputField
-                  icon={<MdKey size={24} className="rotate-90" />}
+                  icon={<MdLock size={24} />}
                   type="password"
                   placeholder="Enter your password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value as string)}
                   required
                 />
                 <InputField
@@ -96,7 +91,7 @@ const SignUp = () => {
                   type="password"
                   placeholder="Confirm password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => setConfirmPassword(e.target.value as string)}
                   required
                 />
                 <PrimaryButton

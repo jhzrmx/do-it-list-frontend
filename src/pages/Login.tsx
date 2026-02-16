@@ -10,33 +10,26 @@ import { Link } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setLoading] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setLoading] = useState<boolean>(false);
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      /*const response =*/ await axiosInstance.post("/auth/login", {
+      await axiosInstance.post("/auth/login", {
         email,
         password,
       });
 
-      // toast.success(`Welcome back, ${response.data.user.name}!`);
-      // Already stored as cookie to prevent XSS
-      // localStorage.setItem("token", response.data.token);
       window.location.href = "/";
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-
-      if (axiosError.response?.data?.message) {
-        toast.error(axiosError.response.data.message);
-      } else {
-        toast.error("Login failed! Please try again.");
-      }
-
+      toast.error(
+        axiosError.response?.data?.message || "Login failed! Please try again.",
+      );
       console.error(err);
     } finally {
       setLoading(false);
@@ -62,7 +55,7 @@ const Login = () => {
                   type="email"
                   placeholder="Enter your email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value as string)}
                   required
                 />
                 <InputField
@@ -70,7 +63,7 @@ const Login = () => {
                   type="password"
                   placeholder="Enter your password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value as string)}
                   required
                 />
                 <div className="w-full flex items-center justify-end text-xs">
@@ -86,7 +79,10 @@ const Login = () => {
                 />
               </form>
               <p className="w-full m-auto text-center my-2">OR</p>
-              <button className="w-full bg-secondary rounded-xl flex items-center hover:cursor-pointer hover:opacity-85 px-4 py-2 my-4">
+              <button
+                onClick={() => toast.success("Coming soon!")}
+                className="w-full bg-secondary rounded-xl flex items-center hover:cursor-pointer hover:opacity-85 px-4 py-2 my-4"
+              >
                 <FcGoogle size={24} className="mr-3" />
                 <p className="text-sm bg-transparent outline-none">
                   Login with Google
