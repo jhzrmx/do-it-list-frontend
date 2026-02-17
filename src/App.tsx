@@ -5,9 +5,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import NotFound from "./pages/404";
 import Error from "./pages/Error";
+import ForgetPassword from "./pages/ForgetPassword";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import ResetPassword from "./pages/ResetPassword";
 import SignUp from "./pages/SignUp";
 import TermsAndCond from "./pages/TermsAndCond";
 import Todos from "./pages/Todos";
@@ -28,10 +30,7 @@ const App = () => {
       children: [
         { path: "/", Component: Home },
         { path: "/tc", Component: TermsAndCond },
-        /* Unimplemented Routes (No Backend)
-        { path: "/forgot-password", Component: ForgetPassword },
-        { path: "/password-reset", Component: PasswordReset },
-        */
+        { path: "/reset-password", Component: ResetPassword },
         {
           element: <ProtectedRoute />,
           children: [
@@ -45,6 +44,7 @@ const App = () => {
           children: [
             { path: "/login", Component: Login },
             { path: "/signup", Component: SignUp },
+            { path: "/forgot-password", Component: ForgetPassword },
           ],
         },
 

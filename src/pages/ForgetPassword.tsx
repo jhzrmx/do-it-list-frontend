@@ -1,18 +1,40 @@
+import axiosInstance from "@/axios/axios-instance";
 import InputField from "@/components/InputField";
 import PrimaryButton from "@/components/PrimaryButton";
+import { AxiosError } from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { MdEmail, MdSend } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 
 const TermsAndCond = () => {
-  const [email, setEmail] = useState("");
-  const navigate = useNavigate();
+  const [email, setEmail] = useState<string>("");
+  const [isLoading, setLoading] = useState<boolean>(false);
 
-  const handleSendEmail = (e: React.SubmitEvent) => {
+  const handleSendEmail = async (e: React.SubmitEvent) => {
     e.preventDefault();
-    console.log(`Email: ${email}`);
-    navigate("/password-reset");
+    setLoading(true);
+
+    try {
+      const response = await axiosInstance.post("/forget-password/send-link", {
+        email,
+      });
+
+      toast.success(
+        response?.data?.message ||
+          "Password reset link has been sent to your email.",
+      );
+    } catch (err) {
+      const axiosError = err as AxiosError<{ message: string }>;
+      toast.error(
+        axiosError.response?.data?.message ||
+          "Sending failed! Please try again.",
+      );
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,6 +66,8 @@ const TermsAndCond = () => {
               <PrimaryButton
                 type="submit"
                 content="Send Password Reset Link"
+                loadingText="Sending..."
+                isLoading={isLoading}
                 icon={<MdSend />}
               />
             </form>

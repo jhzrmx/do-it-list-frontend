@@ -32,12 +32,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       window.location.href = "/";
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-
-      if (axiosError.response?.data?.message) {
-        toast.error(axiosError.response.data.message);
-      } else {
-        toast.error("Logout failed! Please try again.");
-      }
+      toast.error(
+        axiosError.response?.data?.message ||
+          "Logout failed! Please try again.",
+      );
       console.error(err);
     }
   };
