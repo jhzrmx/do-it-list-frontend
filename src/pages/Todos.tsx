@@ -325,7 +325,7 @@ const Todos = () => {
             <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6">
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {isLoading ? (
-                  <div className="text-primary flex flex-col items-center text-lg py-8">
+                  <div className="col-span-full text-primary flex flex-col items-center justify-center text-lg py-12">
                     <div className="mb-4">
                       <SlSocialDropbox size={96} />
                     </div>
@@ -337,7 +337,7 @@ const Todos = () => {
                     </p>
                   </div>
                 ) : todos.length === 0 ? (
-                  <div className="text-primary flex flex-col items-center text-lg py-8">
+                  <div className="col-span-full text-primary flex flex-col items-center justify-center text-lg py-12">
                     <SlSocialDropbox size={96} />
                     <h1 className="font-bold text-3xl my-2">No Todos Found!</h1>
                     <p className="text-black text-center text-xs">
