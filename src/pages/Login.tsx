@@ -67,7 +67,10 @@ const Login = () => {
                   required
                 />
                 <div className="w-full flex items-center justify-end text-xs">
-                  <Link to="/forgot-password" className="cursor-pointer">
+                  <Link
+                    to="/forgot-password"
+                    className="hover:underline cursor-pointer"
+                  >
                     Forgot password?
                   </Link>
                 </div>
@@ -90,7 +93,10 @@ const Login = () => {
               </button>
               <div className="w-full flex items-center justify-center text-sm">
                 <p>Don't have an account?</p>
-                <Link to="/signup" className="font-bold ml-1 cursor-pointer">
+                <Link
+                  to="/signup"
+                  className="font-bold ml-1 cursor-pointer hover:underline"
+                >
                   Sign Up!
                 </Link>
               </div>

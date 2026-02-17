@@ -81,16 +81,28 @@ const ResetPassword = () => {
 
   if (isTokenValid === false) {
     return (
-      <div className="w-full h-dvh flex flex-col items-center justify-center bg-primary text-white">
-        <p>Invalid or expired reset link.</p>
-        <div className="my-4">
+      <div className="w-full h-dvh flex flex-col items-center justify-center bg-secondary">
+        <h1 className="text-4xl font-bold text-primary mb-2">
+          Reset Link Expired
+        </h1>
+        <p className="m-2 text-center">
+          This password reset link is invalid or has expired. Please request a
+          new password reset to continue.
+        </p>
+        <div className="my-2">
           <Link
-            to="/"
-            className="px-3 py-2 text-sm bg-secondary text-primary rounded-lg hover:opacity-80 transition-colors"
+            to="/forgot-password"
+            className="px-3 py-2 bg-primary text-secondary rounded-lg hover:opacity-80 transition-colors"
           >
-            Go Back Home
+            Request New Link
           </Link>
         </div>
+        <Link
+          to="/"
+          className="px-3 py-2 text-sm text-primary rounded-lg hover:underline transition-colors"
+        >
+          Go home instead
+        </Link>
       </div>
     );
   }

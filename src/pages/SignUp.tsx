@@ -103,7 +103,10 @@ const SignUp = () => {
               </form>
               <div className="w-full flex items-center justify-center mt-4 text-sm">
                 <p>Already have an account?</p>
-                <Link to="/login" className="font-bold ml-1 cursor-pointer">
+                <Link
+                  to="/login"
+                  className="font-bold ml-1 cursor-pointer hover:underline"
+                >
                   Sign In!
                 </Link>
               </div>
