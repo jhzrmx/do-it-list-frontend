@@ -182,8 +182,6 @@ const Todos = () => {
 
   return (
     <>
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
-
       <AddModal isOpen={isAddModalOpen} onClose={() => setAddModalOpen(false)}>
         <div className="p-6 text-center">
           <h2 className="text-xl font-bold my-4">Add To Do</h2>
@@ -276,77 +274,101 @@ const Todos = () => {
         </div>
       </EditModal>
 
-      <div className="h-dvh bg-primary flex flex-col">
-        <div className="px-4 h-32 flex items-center">
-          <button
-            className="text-white cursor-pointer"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <MdMenu size={24} />
-          </button>
+      <div className="h-dvh flex bg-primary overflow-hidden">
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-          <div className="px-4 text-white">
-            <h1 className="text-3xl">Hello!</h1>
-            <h1 className="text-3xl font-bold">{user?.fullName}!</h1>
-          </div>
+        <div className="flex-1 flex flex-col min-w-0">
+          <div className="px-6 py-6 flex flex-col gap-6 lg:flex-row lg:items-center">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex flex-row gap-4">
+                <button
+                  className="text-white cursor-pointer lg:hidden"
+                  onClick={() => setSidebarOpen(true)}
+                >
+                  <MdMenu size={24} />
+                </button>
 
-          <div className="ml-auto">
-            <img src={Logo} className="w-24" />
-          </div>
-        </div>
-        <div className="px-4 pb-6">
-          <InputField
-            type="search"
-            icon={<MdOutlineSearch size={24} />}
-            placeholder="Search Todos"
-            onChange={(e) => {
-              setSearchText(e.target.value as string);
-            }}
-          />
-        </div>
-        <div className="bg-secondary rounded-t-4xl flex flex-1 flex-col min-h-0">
-          <div className="w-full flex items-center justify-center">
-            <svg
-              className="w-12"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 290.658 290.658"
-            >
-              <g>
-                <g>
-                  <rect y="139.474" width="290.658" height="11.711" />
-                </g>
-              </g>
-            </svg>
-          </div>
-
-          <div className="w-full flex-1 overflow-y-auto scrollbar-hide px-1 pb-6">
-            {isLoading ? (
-              <div className="text-primary flex flex-col items-center text-lg py-8">
-                <div className="mb-4">
-                  <SlSocialDropbox size={96} />
+                <div className="text-white">
+                  <h1 className="text-3xl">Hello!</h1>
+                  <h1 className="text-3xl font-bold">{user?.fullName}!</h1>
                 </div>
-                <h1 className="font-bold text-3xl my-2">Loading Todos...</h1>
-                <p className="text-black text-center text-xs">
-                  Please wait while we fetch your todos.
-                </p>
               </div>
-            ) : todos.length === 0 ? (
-              <div className="text-primary flex flex-col items-center text-lg py-8">
-                <SlSocialDropbox size={96} />
-                <h1 className="font-bold text-3xl my-2">No Todos Found!</h1>
-                <p className="text-black text-center text-xs">
-                  {debouncedSearchText === ""
-                    ? "Start adding todos by clicking the add icon!"
-                    : "0 results found"}
-                </p>
-              </div>
-            ) : (
-              todos.map((todo, index) => {
-                if (index === todos.length - 1) {
-                  return (
-                    <div ref={lastTodoRef} key={todo._id}>
+              <img src={Logo} className="w-24 lg:hidden" />
+            </div>
+
+            <div className="w-full lg:w-96 lg:ml-auto">
+              <InputField
+                type="search"
+                icon={<MdOutlineSearch size={24} />}
+                placeholder="Search Todos"
+                onChange={(e) => setSearchText(e.target.value as string)}
+              />
+            </div>
+          </div>
+
+          <div className="bg-secondary rounded-t-4xl flex flex-1 flex-col min-h-0">
+            <div className="w-full flex items-center justify-center">
+              <svg
+                className="w-12"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 290.658 290.658"
+              >
+                <g>
+                  <g>
+                    <rect y="139.474" width="290.658" height="11.711" />
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {isLoading ? (
+                  <div className="text-primary flex flex-col items-center text-lg py-8">
+                    <div className="mb-4">
+                      <SlSocialDropbox size={96} />
+                    </div>
+                    <h1 className="font-bold text-3xl my-2">
+                      Loading Todos...
+                    </h1>
+                    <p className="text-black text-center text-xs">
+                      Please wait while we fetch your todos.
+                    </p>
+                  </div>
+                ) : todos.length === 0 ? (
+                  <div className="text-primary flex flex-col items-center text-lg py-8">
+                    <SlSocialDropbox size={96} />
+                    <h1 className="font-bold text-3xl my-2">No Todos Found!</h1>
+                    <p className="text-black text-center text-xs">
+                      {debouncedSearchText === ""
+                        ? "Start adding todos by clicking the add icon!"
+                        : "0 results found"}
+                    </p>
+                  </div>
+                ) : (
+                  todos.map((todo, index) => {
+                    if (index === todos.length - 1) {
+                      return (
+                        <div ref={lastTodoRef} key={todo._id}>
+                          <TodoContainer
+                            todo={todo}
+                            onToggle={(id) => todoDone(id)}
+                            onEdit={(id) => {
+                              setEditModalOpen(true);
+                              setId(id);
+                              setTitle(todo.title);
+                              setPriority(todo.priority);
+                            }}
+                            onDelete={(id) => todoClickDelete(id)}
+                          />
+                        </div>
+                      );
+                    }
+
+                    return (
                       <TodoContainer
+                        key={todo._id}
                         todo={todo}
                         onToggle={(id) => todoDone(id)}
                         onEdit={(id) => {
@@ -357,44 +379,29 @@ const Todos = () => {
                         }}
                         onDelete={(id) => todoClickDelete(id)}
                       />
-                    </div>
-                  );
-                }
-
-                return (
-                  <TodoContainer
-                    key={todo._id}
-                    todo={todo}
-                    onToggle={(id) => todoDone(id)}
-                    onEdit={(id) => {
-                      setEditModalOpen(true);
-                      setId(id);
-                      setTitle(todo.title);
-                      setPriority(todo.priority);
-                    }}
-                    onDelete={(id) => todoClickDelete(id)}
-                  />
-                );
-              })
-            )}
-            {isFetchingMore && (
-              <div className="text-center py-4 text-sm text-gray-500">
-                Loading more...
+                    );
+                  })
+                )}
+                {isFetchingMore && (
+                  <div className="text-center py-4 text-sm text-gray-500">
+                    Loading more...
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
-      </div>
 
-      <button
-        className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-semi-primary text-white flex items-center justify-center shadow-lg hover:bg-primary transition hover:cursor-pointer"
-        onClick={async () => {
-          setTitle("");
-          setAddModalOpen(true);
-        }}
-      >
-        <MdAdd size={24} />
-      </button>
+        <button
+          className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-semi-primary text-white flex items-center justify-center shadow-lg hover:bg-primary transition hover:cursor-pointer"
+          onClick={async () => {
+            setTitle("");
+            setAddModalOpen(true);
+          }}
+        >
+          <MdAdd size={24} />
+        </button>
+      </div>
     </>
   );
 };

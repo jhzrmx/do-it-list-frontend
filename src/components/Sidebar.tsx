@@ -86,16 +86,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       </LogoutModal>
 
       <div
-        className={`fixed inset-0 bg-black/40 transition-opacity duration-300 z-40 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`
+          fixed inset-0 bg-black/40 transition-opacity duration-300 z-40
+          lg:hidden
+          ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}
+        `}
         onClick={onClose}
       />
 
       <div
-        className={`fixed top-0 left-0 h-full w-72 bg-linear-to-b from-orange-200 to-gray-200 shadow-lg z-50 transform transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`
+          fixed top-0 left-0 h-full w-72 bg-linear-to-b from-orange-200 to-gray-200 shadow-lg z-50
+          transform transition-transform duration-300
+          lg:translate-x-0 lg:static lg:h-dvh
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
       >
         <div className="flex flex-col items-center py-10">
           <FaRegCircleUser size={96} className="text-primary" />

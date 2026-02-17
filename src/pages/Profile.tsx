@@ -230,54 +230,62 @@ const Profile = () => {
           />
         </div>
       </DeleteAccountModal>
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="h-dvh bg-primary flex flex-col">
-        <div className="px-4 h-32 flex items-center">
-          <button
-            className="text-white cursor-pointer"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <MdMenu size={24} />
-          </button>
+      <div className="h-dvh flex bg-primary overflow-hidden">
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-          <div className="px-4 text-white flex m-auto">
-            <h1 className="text-3xl text-center font-bold">My Profile</h1>
+        <div className="flex-1 flex flex-col min-w-0">
+          <div className="px-6 py-6 flex items-center">
+            <button
+              className="text-white cursor-pointer lg:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <MdMenu size={24} />
+            </button>
+
+            <div className="flex-1 text-center text-white">
+              <h1 className="text-3xl font-bold">My Profile</h1>
+            </div>
           </div>
-        </div>
-        <div className="bg-secondary rounded-t-4xl flex flex-1 flex-col items-center">
-          <div className="flex flex-col items-center py-10">
-            <FaRegCircleUser size={128} className="text-primary" />
-            <h2 className="mt-4 text-primary font-semibold text-lg">
-              {fullName}
-            </h2>
+
+          <div className="bg-secondary flex-1 rounded-t-4xl overflow-y-auto">
+            <div className="max-w-xl mx-auto px-6 py-10 flex flex-col items-center">
+              <div className="flex flex-col items-center py-10">
+                <FaRegCircleUser size={128} className="text-primary" />
+                <h2 className="mt-4 text-primary font-semibold text-lg">
+                  {fullName}
+                </h2>
+              </div>
+              <button
+                onClick={() => setEditNameModalOpen(true)}
+                className="w-1/2 bg-white rounded-xl flex items-center shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-2 my-2"
+              >
+                <FaUserEdit size={24} className="mr-3" />
+                <p className="text-sm bg-transparent outline-none">Edit Name</p>
+              </button>
+              <button
+                onClick={() => setEditEmailModalOpen(true)}
+                className="w-1/2 bg-white rounded-xl flex items-center shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-2 my-2"
+              >
+                <FaUserEdit size={24} className="mr-3" />
+                <p className="text-sm bg-transparent outline-none">
+                  Edit Email
+                </p>
+              </button>
+              <button
+                onClick={() => setChangePasswordModalOpen(true)}
+                className="w-1/2 bg-tertiary text-sm font-bold text-center rounded-xl shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-3 my-2"
+              >
+                Change Password
+              </button>
+              <button
+                onClick={() => setDeleteAccountModalOpen(true)}
+                className="w-1/2 bg-primary text-sm font-bold text-center rounded-xl shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-3 my-2"
+              >
+                Delete Account
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => setEditNameModalOpen(true)}
-            className="w-1/2 bg-white rounded-xl flex items-center shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-2 my-2"
-          >
-            <FaUserEdit size={24} className="mr-3" />
-            <p className="text-sm bg-transparent outline-none">Edit Name</p>
-          </button>
-          <button
-            onClick={() => setEditEmailModalOpen(true)}
-            className="w-1/2 bg-white rounded-xl flex items-center shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-2 my-2"
-          >
-            <FaUserEdit size={24} className="mr-3" />
-            <p className="text-sm bg-transparent outline-none">Edit Email</p>
-          </button>
-          <button
-            onClick={() => setChangePasswordModalOpen(true)}
-            className="w-1/2 bg-tertiary text-sm font-bold text-center rounded-xl shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-3 my-2"
-          >
-            Change Password
-          </button>
-          <button
-            onClick={() => setDeleteAccountModalOpen(true)}
-            className="w-1/2 bg-primary text-sm font-bold text-center rounded-xl shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-3 my-2"
-          >
-            Delete Account
-          </button>
         </div>
       </div>
     </>
