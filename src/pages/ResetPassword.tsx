@@ -1,6 +1,7 @@
 import axiosInstance from "@/axios/axios-instance";
 import InputField from "@/components/InputField";
 import PrimaryButton from "@/components/PrimaryButton";
+import validatePassword from "@/utils/validate-password";
 import { AxiosError } from "axios";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -14,6 +15,10 @@ const ResetPassword = () => {
   const [isLoading, setLoading] = useState(false);
   const [isTokenValid, setIsTokenValid] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
+  const [errors, setErrors] = useState<{
+    newPassword?: string;
+    confirmPassword?: string;
+  }>({});
   const hasVerified = useRef(false);
 
   const token = searchParams.get("token");
@@ -49,11 +54,19 @@ const ResetPassword = () => {
       return;
     }
 
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match.");
+    const passwordError = validatePassword(newPassword);
+    const confirmError =
+      newPassword !== confirmPassword ? "Passwords do not match" : "";
+
+    if (passwordError || confirmError) {
+      setErrors({
+        newPassword: passwordError,
+        confirmPassword: confirmError,
+      });
+      if (passwordError) toast.error(passwordError);
+      if (confirmError) toast.error(confirmError);
       return;
     }
-
     setLoading(true);
 
     try {
@@ -126,17 +139,41 @@ const ResetPassword = () => {
                   type="password"
                   placeholder="Enter new password"
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value as string;
+                    setNewPassword(value);
+                    const passwordError = validatePassword(value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      newPassword: passwordError,
+                    }));
+                  }}
                   required
                 />
+                {errors.newPassword && (
+                  <p className="text-red-500 text-xs">{errors.newPassword}</p>
+                )}
                 <InputField
                   icon={<MdVerifiedUser size={24} />}
                   type="password"
                   placeholder="Confirm new password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value as string;
+                    setConfirmPassword(value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      confirmPassword:
+                        value !== newPassword ? "Passwords do not match" : "",
+                    }));
+                  }}
                   required
                 />
+                {errors.confirmPassword && (
+                  <p className="text-red-500 text-xs pb-1">
+                    {errors.confirmPassword}
+                  </p>
+                )}
                 <PrimaryButton
                   type="submit"
                   content="Reset Password"

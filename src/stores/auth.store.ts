@@ -16,9 +16,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const res = await axiosInstance.get("/me", {
-        withCredentials: true,
-      });
+      const res = await axiosInstance.get("/me");
       set({ user: res.data.user });
     } catch {
       set({ user: null });
@@ -28,7 +26,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   onLogout: async () => {
-    await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
+    await axiosInstance.post("/auth/logout");
     set({ user: null });
   },
 

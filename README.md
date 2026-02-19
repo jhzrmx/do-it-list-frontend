@@ -84,6 +84,8 @@ Create a `.env.local` file in the root directory.
 
 Make sure the `VITE_API_URL` matches your backend API.
 
+To access the backend, please visit [here](https://github.com/jhzrmx/do-it-list-backend).
+
 ## 🛠 Installation
 
 1. Clone repository

@@ -33,6 +33,8 @@ const SignUp = () => {
         password: passwordError,
         confirmPassword: confirmError,
       });
+      if (passwordError) toast.error(passwordError);
+      if (confirmError) toast.error(confirmError);
       return;
     }
     setLoading(true);
