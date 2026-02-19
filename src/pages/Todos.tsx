@@ -9,6 +9,7 @@ import {
 import PrimaryButton from "@/components/PrimaryButton";
 import Sidebar from "@/components/Sidebar";
 import TodoContainer from "@/components/TodoContainer";
+import TodoContainerSkeleton from "@/components/TodoContainerSkeleton";
 import { useAuthStore } from "@/stores/auth.store";
 import type Todo from "@/types/Todo";
 import type { Priority } from "@/types/Todo";
@@ -352,16 +353,10 @@ const Todos = () => {
             <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6">
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {isLoading ? (
-                  <div className="col-span-full text-primary flex flex-col items-center justify-center text-lg py-12">
-                    <div className="mb-4">
-                      <SlSocialDropbox size={96} />
-                    </div>
-                    <h1 className="font-bold text-3xl my-2">
-                      Loading Todos...
-                    </h1>
-                    <p className="text-black text-center text-xs">
-                      Please wait while we fetch your todos.
-                    </p>
+                  <div className="space-y-3 py-4">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <TodoContainerSkeleton key={i} />
+                    ))}
                   </div>
                 ) : todos.length === 0 ? (
                   <div className="col-span-full text-primary flex flex-col items-center justify-center text-lg py-12">
@@ -411,11 +406,7 @@ const Todos = () => {
                     );
                   })
                 )}
-                {isFetchingMore && (
-                  <div className="text-center py-4 text-sm text-gray-500">
-                    Loading more...
-                  </div>
-                )}
+                {isFetchingMore && <TodoContainerSkeleton />}
               </div>
             </div>
           </main>
