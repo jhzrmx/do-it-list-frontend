@@ -1,7 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axiosInstance from "@/axios/axios-instance";
 import InputField from "@/components/InputField";
-import { default as AddModal, default as EditModal } from "@/components/Modal";
+import {
+  default as AddModal,
+  default as DeleteModal,
+  default as EditModal,
+} from "@/components/Modal";
 import PrimaryButton from "@/components/PrimaryButton";
 import Sidebar from "@/components/Sidebar";
 import TodoContainer from "@/components/TodoContainer";
@@ -30,10 +34,11 @@ const Todos = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const [isAddModalOpen, setAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
   // Todo Properties
-  const [id, setId] = useState("");
-  const [title, setTitle] = useState("");
+  const [id, setId] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [priority, setPriority] = useState<Priority>("low");
 
   const lastTodoRef = useCallback(
@@ -123,7 +128,7 @@ const Todos = () => {
     if (!title.trim()) return;
     try {
       const response = await axiosInstance.post("/todos", { title, priority });
-      const newTodo = response.data;
+      const newTodo = response.data.todo;
       setTodos((prev) => [newTodo, ...prev]);
       toast.success("Todo added successfully");
     } catch (err) {
@@ -164,6 +169,7 @@ const Todos = () => {
     try {
       await axiosInstance.delete(`/todos/${id}`);
       setTodos((prev) => prev.filter((todo) => todo._id !== id));
+      setDeleteModalOpen(false);
       toast.success("Todo deleted successfully");
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
@@ -175,9 +181,8 @@ const Todos = () => {
   };
 
   const todoClickDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this todo?")) {
-      deleteTodo(id);
-    }
+    setId(id);
+    setDeleteModalOpen(true);
   };
 
   return (
@@ -195,13 +200,13 @@ const Todos = () => {
           >
             <input
               placeholder="Title here"
-              className="w-full px-4 py-2 my-2 rounded-lg bg-white"
               value={title}
+              className="w-full px-4 py-2 my-2 rounded-lg bg-white"
               onChange={(e) => setTitle(e.target.value as string)}
               required
             />
-
             <select
+              value={priority}
               className="w-full px-4 py-2 my-2 rounded-lg bg-white cursor-pointer"
               onChange={(e) => setPriority(e.target.value as Priority)}
               required
@@ -249,7 +254,7 @@ const Todos = () => {
             />
 
             <select
-              defaultValue={priority}
+              value={priority}
               className="w-full px-4 py-2 my-2 rounded-lg bg-white cursor-pointer"
               onChange={(e) => setPriority(e.target.value as Priority)}
               required
@@ -274,6 +279,25 @@ const Todos = () => {
         </div>
       </EditModal>
 
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+      >
+        <div className="p-6 text-center">
+          <h2 className="text-xl font-bold my-4">Delete this todo?</h2>
+          <div className="my-8 text-sm">This action can't be undone</div>
+          <PrimaryButton
+            content="Delete"
+            isNegative={true}
+            onClick={() => deleteTodo(id)}
+          />
+          <PrimaryButton
+            content="Cancel"
+            onClick={() => setDeleteModalOpen(false)}
+          />
+        </div>
+      </DeleteModal>
+
       <div className="h-dvh flex bg-primary overflow-hidden">
         <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
 
@@ -285,7 +309,7 @@ const Todos = () => {
                   className="text-white cursor-pointer lg:hidden"
                   onClick={() => setSidebarOpen(true)}
                 >
-                  <MdMenu size={24} />
+                  <MdMenu size={24} aria-label="menu" />
                 </button>
 
                 <div className="text-white">
@@ -293,7 +317,7 @@ const Todos = () => {
                   <h1 className="text-3xl font-bold">{user?.fullName}!</h1>
                 </div>
               </div>
-              <img src={Logo} className="w-24 lg:hidden" />
+              <img src={Logo} alt="dil-logo" className="w-24 lg:hidden" />
             </div>
 
             <div className="w-full lg:w-96 lg:ml-auto">
@@ -306,7 +330,7 @@ const Todos = () => {
             </div>
           </div>
 
-          <div className="bg-secondary rounded-t-4xl flex flex-1 flex-col min-h-0">
+          <main className="bg-secondary rounded-t-4xl flex flex-1 flex-col min-h-0">
             <div className="w-full flex items-center justify-center">
               <svg
                 className="w-12"
@@ -389,7 +413,7 @@ const Todos = () => {
                 )}
               </div>
             </div>
-          </div>
+          </main>
         </div>
 
         <button
@@ -399,7 +423,7 @@ const Todos = () => {
             setAddModalOpen(true);
           }}
         >
-          <MdAdd size={24} />
+          <MdAdd size={24} aria-label="add-todo" />
         </button>
       </div>
     </>

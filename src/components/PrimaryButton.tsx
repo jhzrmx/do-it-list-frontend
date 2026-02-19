@@ -26,7 +26,7 @@ const PrimaryButton = ({
       type={type}
       disabled={isLoading || rest.disabled}
       className={`
-        w-full ${isNegative ? "bg-semi-primary" : "bg-tertiary"} rounded-2xl font-bold py-2 my-2
+        w-full ${isNegative ? "bg-semi-primary" : "bg-tertiary"} transition rounded-2xl font-bold py-2 my-2
         hover:opacity-85 hover:cursor-pointer
         disabled:opacity-60 disabled:cursor-not-allowed
         flex items-center flex-nowrap justify-center

@@ -1,11 +1,6 @@
 import axiosInstance from "@/axios/axios-instance";
+import type User from "@/types/User";
 import { create } from "zustand";
-
-interface User {
-  id: string;
-  email: string;
-  fullName: string;
-}
 
 interface AuthState {
   user: User | null;

@@ -1,6 +1,7 @@
 import axiosInstance from "@/axios/axios-instance";
 import InputField from "@/components/InputField";
 import PrimaryButton from "@/components/PrimaryButton";
+import validatePassword from "@/utils/validate-password";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -14,19 +15,27 @@ const SignUp = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{
+    password?: string;
+    confirmPassword?: string;
+  }>({});
 
   const navigate = useNavigate();
 
   const handleSignUp = async (e: React.SubmitEvent) => {
     e.preventDefault();
-    setLoading(true);
+    const passwordError = validatePassword(password);
+    const confirmError =
+      password !== confirmPassword ? "Passwords do not match" : "";
 
-    if (password != confirmPassword) {
-      toast.error("Passwords do not match");
-      setLoading(false);
+    if (passwordError || confirmError) {
+      setErrors({
+        password: passwordError,
+        confirmPassword: confirmError,
+      });
       return;
     }
-
+    setLoading(true);
     try {
       await axiosInstance.post("/auth/signup", {
         fullName,
@@ -83,17 +92,42 @@ const SignUp = () => {
                   type="password"
                   placeholder="Enter your password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value as string)}
+                  onChange={(e) => {
+                    const value = e.target.value as string;
+                    setPassword(value);
+                    const passwordError = validatePassword(value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      password: passwordError,
+                    }));
+                  }}
                   required
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-xs">{errors.password}</p>
+                )}
                 <InputField
                   icon={<MdVerifiedUser size={24} />}
                   type="password"
                   placeholder="Confirm password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value as string)}
+                  onChange={(e) => {
+                    const value = e.target.value as string;
+                    setConfirmPassword(value);
+                    setErrors((prev) => ({
+                      ...prev,
+                      confirmPassword:
+                        value !== password ? "Passwords do not match" : "",
+                    }));
+                  }}
                   required
                 />
+                {errors.confirmPassword && (
+                  <p className="text-red-500 text-xs pb-1">
+                    {errors.confirmPassword}
+                  </p>
+                )}
+
                 <PrimaryButton
                   type="submit"
                   content="Create Account"

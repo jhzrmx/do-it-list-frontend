@@ -54,14 +54,14 @@ const TodoContainer: React.FC<TodoContainerProps> = ({
             onClick={() => onEdit?.(todo._id)}
             className="text-orange-500 hover:scale-110 transition cursor-pointer"
           >
-            <MdEdit size={20} />
+            <MdEdit size={20} aria-label="edit-todo" />
           </button>
 
           <button
             onClick={() => onDelete?.(todo._id)}
             className="text-red-500 hover:scale-110 transition cursor-pointer"
           >
-            <MdDelete size={20} />
+            <MdDelete size={20} aria-label="delete-todo" />
           </button>
         </div>
       </div>

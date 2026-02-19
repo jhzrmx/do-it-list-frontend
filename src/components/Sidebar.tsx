@@ -25,10 +25,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const [isLogoutModalOpen, setLogoutModalOpen] = useState<boolean>(false);
 
   const logout = async () => {
-    setLogoutModalOpen(false);
     try {
       onLogout();
       toast.success("Logout successful");
+      setLogoutModalOpen(false);
       window.location.href = "/";
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
@@ -94,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         onClick={onClose}
       />
 
-      <div
+      <aside
         className={`
           fixed top-0 left-0 h-full w-72 bg-linear-to-b from-orange-200 to-gray-200 shadow-lg z-50
           transform transition-transform duration-300
@@ -103,7 +103,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         `}
       >
         <div className="flex flex-col items-center py-10">
-          <FaRegCircleUser size={96} className="text-primary" />
+          {user?.imageUrl ? (
+            <img
+              src={user?.imageUrl || undefined}
+              alt="Profile"
+              className="w-32 h-32 rounded-full object-cover"
+            />
+          ) : (
+            <FaRegCircleUser
+              size={96}
+              className="text-primary"
+              aria-label="default-profile"
+            />
+          )}
           <h2 className="mt-4 text-primary font-semibold text-lg">
             {user?.fullName}
           </h2>
@@ -143,7 +155,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             onClick={() => setLogoutModalOpen(true)}
           />
         </div>
-      </div>
+      </aside>
     </>
   );
 };

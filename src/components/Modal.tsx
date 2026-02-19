@@ -1,4 +1,4 @@
-import { type FC, type ReactNode, useState } from "react";
+import { type FC, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { MdClose } from "react-icons/md";
 
@@ -19,38 +19,29 @@ const Modal: FC<ModalProps> = ({
   closeOnBackdropClick = true,
   className = "",
 }) => {
-  const [isVisible, setIsVisible] = useState(isOpen);
-
-  if (isOpen && !isVisible) {
-    setIsVisible(true);
-  }
-
-  const handleAnimationEnd = () => {
-    if (!isOpen) {
-      setIsVisible(false);
-    }
-  };
-
-  if (!isVisible) return null;
-
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      className={`
+        fixed inset-0 z-50 flex items-center justify-center
+        transition-opacity duration-200
+        ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+      `}
+    >
       <div
         onClick={closeOnBackdropClick ? onClose : undefined}
         className={`
-          absolute inset-0 bg-black/40 backdrop-blur-sm
+          absolute inset-0 bg-black/50
           transition-opacity duration-200
           ${isOpen ? "opacity-100" : "opacity-0"}
         `}
       />
 
       <div
-        onTransitionEnd={handleAnimationEnd}
         className={`
           relative z-10 w-2/3 max-w-md
           rounded-2xl bg-secondary shadow-2xl
-          transition-all duration-200
-          ${isOpen ? "scale-100 opacity-100" : "scale-90 opacity-0"}
+          transform transition-all duration-200
+          ${isOpen ? "scale-100 opacity-100" : "scale-75 opacity-0"}
           ${className}
         `}
       >
