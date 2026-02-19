@@ -255,7 +255,11 @@ const Profile = () => {
               onDrop={(e) => {
                 e.preventDefault();
                 setIsDragging(false);
-                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                if (
+                  e.dataTransfer.files &&
+                  e.dataTransfer.files.length > 0 &&
+                  e.dataTransfer.files[0].type.startsWith("image/")
+                ) {
                   fileInputRef.current!.files = e.dataTransfer.files;
                   setPreview(URL.createObjectURL(e.dataTransfer.files[0]));
                 }
