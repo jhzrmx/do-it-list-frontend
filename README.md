@@ -84,8 +84,6 @@ Create a `.env.local` file in the root directory.
 
 Make sure the `VITE_API_URL` matches your backend API.
 
-**Note**: The `FILE_UPLOADER_API_URL` is customized on a specific organization
-
 ## 🛠 Installation
 
 1. Clone repository

@@ -3,7 +3,8 @@ import { uploadFileInChunks } from "@/utils/chunk-uploader";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export const FILE_UPLOADER_API_URL = import.meta.env.FILE_UPLOADER_API_URL;
+export const FILE_UPLOADER_API_URL =
+  "https://fileuploader.cloudmateria.com/api/bcloud/fileuploader";
 
 export const extractUrlParam = (
   url: string | null | undefined,
