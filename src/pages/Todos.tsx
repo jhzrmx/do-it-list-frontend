@@ -32,6 +32,7 @@ const Todos = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const isRequestingRef = useRef(false);
   const [isAddModalOpen, setAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -43,24 +44,23 @@ const Todos = () => {
 
   const lastTodoRef = useCallback(
     (node: HTMLDivElement | null) => {
-      if (isLoading || isFetchingMore) return;
-      if (!hasMore) return;
-
-      if (observerRef.current) observerRef.current.disconnect();
-
-      observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          if (!nextCursor) return;
-          setIsFetchingMore(true);
-          getTodos(debouncedSearchText, nextCursor).finally(() =>
-            setIsFetchingMore(false),
-          );
-        }
-      });
-
-      if (node) observerRef.current.observe(node);
+      if (!node) return;
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0].isIntersecting) return;
+          if (!nextCursorRef.current) return;
+          getTodos(debouncedSearchText, nextCursorRef.current);
+        },
+        {
+          rootMargin: "200px",
+        },
+      );
+      observerRef.current.observe(node);
     },
-    [isLoading, isFetchingMore, hasMore, nextCursor, debouncedSearchText],
+    [debouncedSearchText],
   );
 
   useEffect(() => {
@@ -93,17 +93,19 @@ const Todos = () => {
     cursor: string | null = null,
     isInitialLoad = false,
   ) => {
-    if (!hasMore && !isInitialLoad) return; // stop fetching if no more
-    if (cursor) {
-      setIsFetchingMore(true);
-    } else {
-      setLoading(true);
-    }
+    if (isRequestingRef.current) return;
+    if (!hasMore && !isInitialLoad) return;
+
+    isRequestingRef.current = true;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    cursor ? setIsFetchingMore(true) : setLoading(true);
 
     try {
       const response = await axiosInstance.get("/todos", {
         params: { search, cursor, limit: 10 },
       });
+
       const {
         todos: newTodos,
         nextCursor: newNextCursor,
@@ -119,6 +121,7 @@ const Todos = () => {
         axiosError.response?.data?.message || "Failed to fetch todos",
       );
     } finally {
+      isRequestingRef.current = false;
       setLoading(false);
       setIsFetchingMore(false);
     }
@@ -374,8 +377,9 @@ const Todos = () => {
                   todos.map((todo, index) => {
                     if (index === todos.length - 1) {
                       return (
-                        <div ref={lastTodoRef} key={todo._id}>
+                        <div ref={lastTodoRef}>
                           <TodoContainer
+                            otherClassName="animate-fade-up"
                             todo={todo}
                             onToggle={(id) => todoDone(id)}
                             onEdit={(id) => {
@@ -392,6 +396,7 @@ const Todos = () => {
 
                     return (
                       <TodoContainer
+                        otherClassName="animate-fade-up"
                         key={todo._id}
                         todo={todo}
                         onToggle={(id) => todoDone(id)}

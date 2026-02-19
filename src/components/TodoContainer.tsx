@@ -9,6 +9,7 @@ interface TodoContainerProps {
   onToggle?: (id: string) => void;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  otherClassName?: string
 }
 
 const priorityColorMap: Record<Priority, string> = {
@@ -22,10 +23,11 @@ const TodoContainer: React.FC<TodoContainerProps> = ({
   onToggle,
   onEdit,
   onDelete,
+  otherClassName = "",
 }) => {
   return (
     <div className="w-full">
-      <div className="w-full bg-gray-100 rounded-xl shadow-sm flex items-center justify-between px-4 py-3 relative overflow-hidden">
+      <div className={`w-full bg-gray-100 rounded-xl shadow-sm flex items-center justify-between px-4 py-3 relative overflow-hidden ${otherClassName}`}>
         <div
           className={`absolute left-0 top-0 h-full w-2 ${priorityColorMap[todo.priority]}`}
         />

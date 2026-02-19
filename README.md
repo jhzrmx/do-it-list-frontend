@@ -24,6 +24,7 @@ Designed with scalability, maintainability, and production-readiness in mind.
 - 📝 Create, update, delete todos
 - 📂 File upload (chunk-based uploader)
 - 👤 Profile management
+- 🔓 Password reset via email
 - 🔑 Password validation with real-time feedback
 - 📄 Terms & Conditions page
 - 🚫 404 & error handling pages
@@ -33,45 +34,49 @@ Designed with scalability, maintainability, and production-readiness in mind.
 ```
 src/
 │
-├── api/ # API abstraction layer
-│ └── file-uploader.api.ts
+├── api/                       # API abstraction layer
+│   ├── auth.api.ts
+│   ├── file-uploader.api.ts
+│   ├── password-reset.api.ts
+│   ├── todo.api.ts
+│   └── user.api.ts
 │
-├── axios/ # Axios instance configuration
-│ └── axios-instance.ts
+├── axios/                     # Axios instance configuration
+│   └── axios-instance.ts
 │
-├── components/ # Reusable UI components
-│ ├── InputField.tsx
-│ ├── Modal.tsx
-│ ├── PrimaryButton.tsx
-│ ├── ProtectedRoute.tsx
-│ ├── PublicOnlyRoute.tsx
-│ ├── Sidebar.tsx
-│ ├── TermsContent.tsx
-│ └── TodoContainer.tsx
+├── components/                # Reusable UI components
+│   ├── InputField.tsx
+│   ├── Modal.tsx
+│   ├── PrimaryButton.tsx
+│   ├── ProtectedRoute.tsx
+│   ├── PublicOnlyRoute.tsx
+│   ├── Sidebar.tsx
+│   ├── TermsContent.tsx
+│   └── TodoContainer.tsx
 │
-├── layouts/ # Layout components
+├── layouts/                    # Layout components
 │
-├── pages/ # Route-level pages
-│ ├── Login.tsx
-│ ├── SignUp.tsx
-│ ├── Todos.tsx
-│ ├── Profile.tsx
-│ ├── ForgetPassword.tsx
-│ ├── ResetPassword.tsx
-│ ├── TermsAndCond.tsx
-│ ├── Error.tsx
-│ └── 404.tsx
+├── pages/                      # Route-level pages
+│   ├── Login.tsx
+│   ├── SignUp.tsx
+│   ├── Todos.tsx
+│   ├── Profile.tsx
+│   ├── ForgetPassword.tsx
+│   ├── ResetPassword.tsx
+│   ├── TermsAndCond.tsx
+│   ├── Error.tsx
+│   └── 404.tsx
 │
-├── stores/ # Zustand global state
-│ └── auth.store.ts
+├── stores/                     # Zustand global state
+│   └── auth.store.ts
 │
-├── types/ # TypeScript types
-│ ├── Todo.ts
-│ └── User.ts
+├── types/                      # TypeScript types
+│   ├── Todo.ts
+│   └── User.ts
 │
-├── utils/ # Utility functions
-│ ├── chunk-uploader.ts
-│ └── validate-password.ts
+├── utils/                      # Utility functions
+│   ├── chunk-uploader.ts
+│   └── validate-password.ts
 │
 ├── App.tsx
 ├── main.tsx
@@ -185,7 +190,8 @@ It enforces:
 - Minimum length
 - Character requirements
 - Secure password standards
-- This improves UX before hitting the backend.
+
+This improves UX before hitting the backend.
 
 ## 🧩 Reusable Components
 

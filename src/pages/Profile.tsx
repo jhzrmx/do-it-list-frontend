@@ -402,7 +402,7 @@ const Profile = () => {
           </div>
           <main className="bg-secondary flex-1 rounded-t-4xl overflow-y-auto">
             <div className="max-w-xl mx-auto px-6 py-10 flex flex-col items-center">
-              <div className="flex flex-col items-center py-10 relative">
+              <div className="flex flex-col items-center py-10 relative animate-fade-up">
                 {user?.imageUrl ? (
                   <img
                     src={user?.imageUrl || undefined}
