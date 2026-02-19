@@ -15,22 +15,32 @@ import TermsAndCond from "./pages/TermsAndCond";
 import Todos from "./pages/Todos";
 import { useAuthStore } from "./stores/auth.store";
 
+/**
+ * Main App component that sets up the application routing and authentication flow.
+ * This component initializes the authentication state and configures all application routes
+ * including protected routes for authenticated users and public routes for unauthenticated users.
+ */
 const App = () => {
+  // Access the authentication store to check user authentication status
   const { checkAuth } = useAuthStore();
 
+  // Check authentication status on component mount to restore user session
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
+  // Configure the application router with nested routes for different user states
   const router = createBrowserRouter([
     {
       path: "/",
       Component: Outlet,
       errorElement: <Error />,
       children: [
+        // Public routes accessible to all users
         { path: "/", Component: Home },
         { path: "/tc", Component: TermsAndCond },
         { path: "/reset-password", Component: ResetPassword },
+        // Protected routes that require authentication
         {
           element: <ProtectedRoute />,
           children: [
@@ -39,6 +49,7 @@ const App = () => {
           ],
         },
 
+        // Routes accessible only to unauthenticated users
         {
           element: <PublicOnlyRoute />,
           children: [
@@ -47,7 +58,7 @@ const App = () => {
             { path: "/forgot-password", Component: ForgetPassword },
           ],
         },
-
+        // Catch-all route for 404 errors
         { path: "*", Component: NotFound },
       ],
     },
@@ -55,7 +66,9 @@ const App = () => {
 
   return (
     <div>
+      {/* Toast notifications provider for displaying user feedback */}
       <Toaster position="top-center" reverseOrder={false} />
+      {/* Router provider that renders the appropriate component based on the current URL */}
       <RouterProvider router={router} />
     </div>
   );

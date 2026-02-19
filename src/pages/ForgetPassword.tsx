@@ -8,10 +8,24 @@ import { MdEmail, MdSend } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 
-const TermsAndCond = () => {
+/**
+ * ForgetPassword component handles the password reset request functionality.
+ * Users can enter their email to receive a password reset link.
+ *
+ * @returns {JSX.Element} The rendered ForgetPassword page component.
+ */
+const ForgetPassword = () => {
+  // State to store the user's email input
   const [email, setEmail] = useState<string>("");
+  // State to manage loading state during email sending
   const [isLoading, setLoading] = useState<boolean>(false);
 
+  /**
+   * Handles the form submission to send password reset email.
+   * Makes an API call to request password reset and shows success/error toasts.
+   *
+   * @param {React.SubmitEvent} e - The form submit event.
+   */
   const handleSendEmail = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -41,12 +55,14 @@ const TermsAndCond = () => {
     <div className="w-full h-dvh bg-primary flex items-center justify-center">
       <div className="w-full h-[85dvh] bg-secondary rounded-tl-4xl rounded-br-4xl flex items-center justify-center">
         <div className="flex flex-col items-center w-full max-w-sm px-4">
+          {/* Logo and title section */}
           <div className="flex flex-row items-center">
             <img src={Logo} className="w-28" />
             <h1 className="font-bold text-4xl text-primary text-center m-4">
               Do it list!
             </h1>
           </div>
+          {/* Main form container */}
           <div className="w-full bg-semi-primary rounded-4xl p-6 mt-8">
             <h1 className="font-bold text-center text-xl mb-6">
               Forget Password
@@ -54,6 +70,7 @@ const TermsAndCond = () => {
             <p className="my-4 text-sm text-center">
               We will send you a password reset link to your email
             </p>
+            {/* Password reset form */}
             <form onSubmit={(e) => handleSendEmail(e)}>
               <InputField
                 icon={<MdEmail size={24} />}
@@ -71,6 +88,7 @@ const TermsAndCond = () => {
                 icon={<MdSend />}
               />
             </form>
+            {/* Link to go back to login */}
             <div className="w-full flex items-center justify-center mt-8 text-sm">
               <Link to="/login" className="ml-1 cursor-pointer">
                 Go back to login page
@@ -83,4 +101,4 @@ const TermsAndCond = () => {
   );
 };
 
-export default TermsAndCond;
+export default ForgetPassword;

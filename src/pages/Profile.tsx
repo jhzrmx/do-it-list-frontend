@@ -23,9 +23,19 @@ import { FaUserEdit } from "react-icons/fa";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { MdEdit, MdKey, MdLock, MdMenu, MdVerifiedUser } from "react-icons/md";
 
+/**
+ * Profile component - User profile management page
+ * Allows users to view and edit their profile information including name, email, password, and profile image
+ * Also provides account deletion functionality
+ */
 const Profile = () => {
+  // Extract user data and update function from auth store
   const { user, onUpdateUser } = useAuthStore();
+
+  // State for controlling sidebar visibility
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false);
+
+  // States for controlling modal visibility
   const [isEditNameModalOpen, setEditNameModalOpen] = useState<boolean>(false);
   const [isEditEmailModalOpen, setEditEmailModalOpen] =
     useState<boolean>(false);
@@ -36,21 +46,33 @@ const Profile = () => {
   const [isDeleteAccountModalOpen, setDeleteAccountModalOpen] =
     useState<boolean>(false);
 
+  // Form state variables for user input
   const [fullName, setFullName] = useState<string | undefined>(user?.fullName);
   const [email, setEmail] = useState<string | undefined>(user?.email);
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+
+  // Error state for password validation
   const [errors, setErrors] = useState<{
     newPassword?: string;
     confirmPassword?: string;
   }>({});
+
+  // Image upload related state
   const [preview, setPreview] = useState<string | null>(user?.imageUrl || null);
   const [isUploading, setUploading] = useState<boolean>(false);
   const [isDeleting, setDeleting] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  // Reference to file input element for image upload
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * Updates user information via API call
+   * @param user - Object containing user data to update
+   * @returns Promise<boolean> - True if update successful, false otherwise
+   */
   const updateUser = async (user: object): Promise<boolean> => {
     try {
       await axiosInstance.put("/me", user);
@@ -65,6 +87,10 @@ const Profile = () => {
     return false;
   };
 
+  /**
+   * Deletes the user account and associated image
+   * @returns Promise<boolean> - True if deletion successful, false otherwise
+   */
   const deleteAccount = async (): Promise<boolean> => {
     try {
       await axiosInstance.delete("/me");
@@ -87,6 +113,7 @@ const Profile = () => {
 
   return (
     <>
+      {/* Modal for editing user name */}
       <EditNameModal
         isOpen={isEditNameModalOpen}
         onClose={() => {
@@ -125,6 +152,7 @@ const Profile = () => {
         </div>
       </EditNameModal>
 
+      {/* Modal for editing user email */}
       <EditEmailModal
         isOpen={isEditEmailModalOpen}
         onClose={() => {
@@ -166,6 +194,7 @@ const Profile = () => {
         </div>
       </EditEmailModal>
 
+      {/* Modal for changing user password with validation */}
       <ChangePasswordModal
         isOpen={isChangePasswordModalOpen}
         onClose={() => setChangePasswordModalOpen(false)}
@@ -175,7 +204,9 @@ const Profile = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              // Validate new password strength
               const passwordError = validatePassword(newPassword);
+              // Check if passwords match
               const confirmError =
                 newPassword !== confirmPassword ? "Passwords do not match" : "";
 
@@ -259,6 +290,7 @@ const Profile = () => {
         </div>
       </ChangePasswordModal>
 
+      {/* Modal for changing profile image with drag-and-drop support */}
       <ChangeImageModal
         isOpen={isChangeImageModalOpen}
         onClose={() => setChangeImageModalOpen(false)}
@@ -277,6 +309,7 @@ const Profile = () => {
               );
             }}
           >
+            {/* Drag and drop area for image selection */}
             <div
               className={`border-2 border-dashed rounded-xl p-6 cursor-pointer mb-4 bg-white ${
                 isDragging ? "border-primary bg-primary/10" : "border-gray-500"
@@ -305,6 +338,7 @@ const Profile = () => {
             >
               <p className="text-gray-500 font-semibold my-2">Choose Image</p>
             </div>
+            {/* Hidden file input for image selection */}
             <input
               type="file"
               ref={fileInputRef}
@@ -316,6 +350,7 @@ const Profile = () => {
                 }
               }}
             />
+            {/* Image preview */}
             {preview && (
               <img
                 alt="Selected Profile"
@@ -323,12 +358,14 @@ const Profile = () => {
                 className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
               />
             )}
+            {/* Upload button */}
             <PrimaryButton
               isLoading={isUploading}
               loadingText="Uploading..."
               content={user?.imageUrl ? "Replace" : "Upload"}
               type="submit"
             />
+            {/* Delete image button (only shown if user has an image) */}
             {user?.imageUrl && (
               <PrimaryButton
                 content="Delete"
@@ -364,6 +401,7 @@ const Profile = () => {
         </div>
       </ChangeImageModal>
 
+      {/* Modal for account deletion confirmation */}
       <DeleteAccountModal
         isOpen={isDeleteAccountModalOpen}
         onClose={() => setDeleteAccountModalOpen(false)}
@@ -385,10 +423,12 @@ const Profile = () => {
         </div>
       </DeleteAccountModal>
 
+      {/* Main layout container */}
       <div className="h-dvh flex bg-primary overflow-hidden">
         <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         <div className="flex-1 flex flex-col min-w-0">
+          {/* Header with menu button and title */}
           <div className="px-6 py-6 flex items-center">
             <button
               className="text-white cursor-pointer lg:hidden"
@@ -400,8 +440,11 @@ const Profile = () => {
               <h1 className="text-3xl font-bold">My Profile</h1>
             </div>
           </div>
+
+          {/* Main content area */}
           <main className="bg-secondary flex-1 rounded-t-4xl overflow-y-auto">
             <div className="max-w-xl mx-auto px-6 py-10 flex flex-col items-center">
+              {/* Profile image section with edit button */}
               <div className="flex flex-col items-center py-10 relative animate-fade-up">
                 {user?.imageUrl ? (
                   <img
@@ -432,6 +475,8 @@ const Profile = () => {
                   {fullName}
                 </h2>
               </div>
+
+              {/* Action buttons for profile management */}
               <button
                 onClick={() => setEditNameModalOpen(true)}
                 className="w-1/2 bg-white rounded-xl flex items-center shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-2 my-2"

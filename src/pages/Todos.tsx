@@ -20,29 +20,46 @@ import { MdAdd, MdMenu, MdOutlineSearch } from "react-icons/md";
 import { SlSocialDropbox } from "react-icons/sl";
 import Logo from "../assets/logo.svg";
 
+/**
+ * Todos component - Main page for displaying and managing user's todo items
+ * Features: infinite scroll, search, add/edit/delete todos, responsive design
+ */
 const Todos = () => {
+  // Get authenticated user from auth store
   const { user } = useAuthStore();
+
+  // UI state
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const [debouncedSearchText, setDebouncedSearchText] =
     useState<string>(searchText);
   const debounceTimeout = useRef<number | null>(null);
+
+  // Loading and data states
   const [isLoading, setLoading] = useState<boolean>(false);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+  // Infinite scroll refs
   const observerRef = useRef<IntersectionObserver | null>(null);
   const isRequestingRef = useRef(false);
+
+  // Modal states
   const [isAddModalOpen, setAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
-  // Todo Properties
+  // Todo form states
   const [id, setId] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [priority, setPriority] = useState<Priority>("low");
 
+  /**
+   * Callback ref for infinite scroll - observes the last todo item
+   * Triggers loading more todos when the last item comes into view
+   */
   const lastTodoRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (!node) return;
@@ -64,6 +81,7 @@ const Todos = () => {
     [debouncedSearchText],
   );
 
+  // Debounce search input to avoid excessive API calls
   useEffect(() => {
     if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
@@ -76,6 +94,7 @@ const Todos = () => {
     };
   }, [searchText]);
 
+  // Reset todos and fetch new list when search text changes
   useEffect(() => {
     setTodos([]);
     setNextCursor(null);
@@ -83,12 +102,19 @@ const Todos = () => {
     getTodos(debouncedSearchText, null, true);
   }, [debouncedSearchText]);
 
+  // Ref to keep nextCursor in sync for intersection observer
   const nextCursorRef = useRef<string | null>(null);
 
   useEffect(() => {
     nextCursorRef.current = nextCursor;
   }, [nextCursor]);
 
+  /**
+   * Fetches todos from the API with pagination and search support
+   * @param search - Search query string
+   * @param cursor - Pagination cursor for next page
+   * @param isInitialLoad - Whether this is the first load (resets list)
+   */
   const getTodos = async (
     search: string = "",
     cursor: string | null = null,
@@ -128,6 +154,11 @@ const Todos = () => {
     }
   };
 
+  /**
+   * Adds a new todo item to the list
+   * @param title - Todo title
+   * @param priority - Todo priority level
+   */
   const addTodo = async (title: string, priority: string = "low") => {
     if (!title.trim()) return;
     try {
@@ -142,6 +173,11 @@ const Todos = () => {
     }
   };
 
+  /**
+   * Updates an existing todo item
+   * @param id - Todo ID to update
+   * @param updatedFields - Fields to update
+   */
   const updateTodo = async (id: string, updatedFields: Partial<Todo>) => {
     try {
       await axiosInstance.put(`/todos/${id}`, updatedFields);
@@ -160,6 +196,10 @@ const Todos = () => {
     }
   };
 
+  /**
+   * Toggles the completion status of a todo
+   * @param id - Todo ID to toggle
+   */
   const todoDone = (id: string) => {
     setTodos((prev) =>
       prev.map((todo) =>
@@ -169,6 +209,10 @@ const Todos = () => {
     updateTodo(id, { completed: !todos.find((t) => t._id === id)?.completed });
   };
 
+  /**
+   * Deletes a todo item
+   * @param id - Todo ID to delete
+   */
   const deleteTodo = async (id: string) => {
     try {
       await axiosInstance.delete(`/todos/${id}`);
@@ -184,6 +228,10 @@ const Todos = () => {
     }
   };
 
+  /**
+   * Opens the delete confirmation modal for a todo
+   * @param id - Todo ID to delete
+   */
   const todoClickDelete = (id: string) => {
     setId(id);
     setDeleteModalOpen(true);
@@ -191,6 +239,7 @@ const Todos = () => {
 
   return (
     <>
+      {/* Add Todo Modal */}
       <AddModal isOpen={isAddModalOpen} onClose={() => setAddModalOpen(false)}>
         <div className="p-6 text-center">
           <h2 className="text-xl font-bold my-4">Add To Do</h2>
@@ -235,6 +284,7 @@ const Todos = () => {
         </div>
       </AddModal>
 
+      {/* Edit Todo Modal */}
       <EditModal
         isOpen={isEditModalOpen}
         onClose={() => setEditModalOpen(false)}
@@ -283,6 +333,7 @@ const Todos = () => {
         </div>
       </EditModal>
 
+      {/* Delete Todo Confirmation Modal */}
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
@@ -302,10 +353,13 @@ const Todos = () => {
         </div>
       </DeleteModal>
 
+      {/* Main Layout */}
       <div className="h-dvh flex bg-primary overflow-hidden">
         <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
 
+        {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0">
+          {/* Header Section */}
           <div className="px-6 py-6 flex flex-col gap-6 lg:flex-row lg:items-center">
             <div className="flex items-center justify-between gap-4">
               <div className="flex flex-row gap-4">
@@ -324,6 +378,7 @@ const Todos = () => {
               <img src={Logo} alt="dil-logo" className="w-24 lg:hidden" />
             </div>
 
+            {/* Search Input */}
             <div className="w-full lg:w-96 lg:ml-auto">
               <InputField
                 type="search"
@@ -334,7 +389,9 @@ const Todos = () => {
             </div>
           </div>
 
+          {/* Main Content Container */}
           <main className="bg-secondary rounded-t-4xl flex flex-1 flex-col min-h-0">
+            {/* Decorative SVG */}
             <div className="w-full flex items-center justify-center">
               <svg
                 className="w-12"
@@ -350,15 +407,18 @@ const Todos = () => {
               </svg>
             </div>
 
+            {/* Todo List Container */}
             <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6">
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {isLoading ? (
+                  // Loading skeletons
                   <div className="space-y-3 py-4">
                     {Array.from({ length: 3 }).map((_, i) => (
                       <TodoContainerSkeleton key={i} />
                     ))}
                   </div>
                 ) : todos.length === 0 ? (
+                  // Empty state
                   <div className="col-span-full text-primary flex flex-col items-center justify-center text-lg py-12">
                     <SlSocialDropbox size={96} />
                     <h1 className="font-bold text-3xl my-2">No Todos Found!</h1>
@@ -369,6 +429,7 @@ const Todos = () => {
                     </p>
                   </div>
                 ) : (
+                  // Todo items list
                   todos.map((todo, index) => {
                     if (index === todos.length - 1) {
                       return (
@@ -412,6 +473,7 @@ const Todos = () => {
           </main>
         </div>
 
+        {/* Floating Add Todo Button */}
         <button
           className="fixed bottom-6 right-6 w-16 h-16 rounded-full p-0 border-none bg-transparent cursor-pointer"
           onClick={() => {
