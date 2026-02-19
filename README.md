@@ -1,73 +1,257 @@
-# React + TypeScript + Vite
+# 📝 Do-It-List Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend application for **Do-It-List**, built with **React + TypeScript + Vite**.  
+This client handles authentication, task management, protected routing, file uploads, and user profile management.
 
-Currently, two official plugins are available:
+Designed with scalability, maintainability, and production-readiness in mind.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tech Stack
 
-## React Compiler
+- **React 18**
+- **TypeScript**
+- **Vite**
+- **Zustand** (state management)
+- **Axios** (API communication)
+- **Tailwind CSS**
+- **React Router**
+- **ESLint**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📦 Features
 
-## Expanding the ESLint configuration
+- 🔐 Authentication (Login, Sign Up, Logout)
+- 🔁 JWT-based session handling
+- 🔒 Protected & Public-only routes
+- 📝 Create, update, delete todos
+- 📂 File upload (chunk-based uploader)
+- 👤 Profile management
+- 🔑 Password validation with real-time feedback
+- 📄 Terms & Conditions page
+- 🚫 404 & error handling pages
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📁 Project Structure
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```
+src/
+│
+├── api/ # API abstraction layer
+│ └── file-uploader.api.ts
+│
+├── axios/ # Axios instance configuration
+│ └── axios-instance.ts
+│
+├── components/ # Reusable UI components
+│ ├── InputField.tsx
+│ ├── Modal.tsx
+│ ├── PrimaryButton.tsx
+│ ├── ProtectedRoute.tsx
+│ ├── PublicOnlyRoute.tsx
+│ ├── Sidebar.tsx
+│ ├── TermsContent.tsx
+│ └── TodoContainer.tsx
+│
+├── layouts/ # Layout components
+│
+├── pages/ # Route-level pages
+│ ├── Login.tsx
+│ ├── SignUp.tsx
+│ ├── Todos.tsx
+│ ├── Profile.tsx
+│ ├── ForgetPassword.tsx
+│ ├── ResetPassword.tsx
+│ ├── TermsAndCond.tsx
+│ ├── Error.tsx
+│ └── 404.tsx
+│
+├── stores/ # Zustand global state
+│ └── auth.store.ts
+│
+├── types/ # TypeScript types
+│ ├── Todo.ts
+│ └── User.ts
+│
+├── utils/ # Utility functions
+│ ├── chunk-uploader.ts
+│ └── validate-password.ts
+│
+├── App.tsx
+├── main.tsx
+└── index.css
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ⚙️ Environment Setup
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+Create a `.env.local` file in the root directory:
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
 ```
+
+Make sure this matches your backend API.
+
+🛠 Installation
+
+1. Clone repository
+
+```
+git clone <repository-url>
+```
+
+2. Navigate into project
+
+```
+cd do-it-list-frontend
+```
+
+3. Install dependencies
+
+```
+npm install
+```
+
+4. Run development server
+
+```
+npm run dev
+```
+
+## 📜 Available Scripts
+
+```
+npm run dev        # Start development server
+npm run build      # Build for production
+npm run preview    # Preview production build
+npm run lint       # Run ESLint
+```
+
+## 🔐 Authentication Flow
+
+- User logs in or signs up.
+- Backend returns a JWT.
+- Token is stored (typically in localStorage).
+- Zustand auth.store.ts manages authentication state.
+- ProtectedRoute restricts access to authenticated users.
+- PublicOnlyRoute prevents logged-in users from accessing auth pages.
+
+## 🧠 State Management (Zustand)
+
+Global auth state is handled via:
+
+```
+src/stores/auth.store.ts
+```
+
+**Responsibilities**:
+
+- Store authenticated user
+- Persist session state
+- Handle login/logout logic
+- Sync with backend
+
+## 🌐 API Integration
+
+All API communication is centralized using:
+
+```
+src/axios/axios-instance.ts
+```
+
+**Benefits**:
+
+- Single source for base URL
+- Interceptors support
+- Automatic token injection
+- Cleaner API calls
+
+File uploads use:
+
+```
+src/api/file-uploader.api.ts
+```
+
+Chunk uploads are handled in:
+
+```
+src/utils/chunk-uploader.ts
+```
+
+## 🔑 Password Validation
+
+Real-time password validation logic lives in:
+
+```
+src/utils/validate-password.ts
+```
+
+It enforces:
+
+- Minimum length
+- Character requirements
+- Secure password standards
+- This improves UX before hitting the backend.
+
+## 🧩 Reusable Components
+
+Key components:
+
+- InputField → Form abstraction
+- PrimaryButton → Styled action button
+- Modal → Reusable modal container
+- TodoContainer → Todo display wrapper
+- Sidebar → Navigation layout
+- ProtectedRoute → Route guard
+
+Each component is typed and reusable across pages.
+
+## 🏗 Routing Structure
+
+Managed inside App.tsx using React Router.
+
+Public Routes:
+
+```
+/login
+/signup
+/forget-password
+/reset-password
+/tc
+```
+
+Protected Routes:
+
+```
+/todos
+/profile
+```
+
+Fallback:
+
+```
+/404
+```
+
+## 🎨 Styling
+
+Tailwind CSS for utility-first styling
+
+- Mobile-first responsive design
+- Clean, scalable UI structure
+
+## 🧪 Production Build
+
+```
+npm run build
+```
+
+Output will be generated in the dist/ folder.
+
+## 🤝 Contribution Guidelines
+
+- Follow consistent TypeScript typing.
+- Keep components reusable and modular.
+- Maintain clean separation between:
+  - UI
+  - State
+  - API
+
+- Use descriptive commit messages.
+- Ensure lint passes before pushing.
