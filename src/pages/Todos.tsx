@@ -372,7 +372,7 @@ const Todos = () => {
                   todos.map((todo, index) => {
                     if (index === todos.length - 1) {
                       return (
-                        <div ref={lastTodoRef}>
+                        <div ref={lastTodoRef} key={todo._id}>
                           <TodoContainer
                             otherClassName="animate-fade-up"
                             todo={todo}
@@ -413,13 +413,16 @@ const Todos = () => {
         </div>
 
         <button
-          className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-semi-primary text-white flex items-center justify-center shadow-lg hover:bg-primary transition hover:cursor-pointer"
-          onClick={async () => {
+          className="fixed bottom-6 right-6 w-16 h-16 rounded-full p-0 border-none bg-transparent cursor-pointer"
+          onClick={() => {
             setTitle("");
             setAddModalOpen(true);
           }}
         >
-          <MdAdd size={24} aria-label="add-todo" />
+          <div className="absolute inset-0 rounded-full shadow-lg"></div>
+          <div className="relative w-full h-full rounded-full bg-semi-primary flex items-center justify-center text-white transition hover:rotate-90 hover:bg-primary">
+            <MdAdd size={24} aria-label="add-todo" />
+          </div>
         </button>
       </div>
     </>
