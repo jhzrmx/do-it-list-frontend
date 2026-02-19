@@ -80,15 +80,13 @@ src/
 
 ## ⚙️ Environment Setup
 
-Create a `.env.local` file in the root directory:
+Create a `.env.local` file in the root directory.
 
-```env
-VITE_API_BASE_URL=http://localhost:5000/api
-```
+Make sure the `VITE_API_URL` matches your backend API.
 
-Make sure this matches your backend API.
+**Note**: The `FILE_UPLOADER_API_URL` is customized on a specific organization
 
-🛠 Installation
+## 🛠 Installation
 
 1. Clone repository
 
