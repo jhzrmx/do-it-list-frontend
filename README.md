@@ -91,7 +91,7 @@ Make sure the `VITE_API_URL` matches your backend API.
 1. Clone repository
 
 ```
-git clone <repository-url>
+git clone https://github.com/jhzrmx/do-it-list-frontend
 ```
 
 2. Navigate into project
