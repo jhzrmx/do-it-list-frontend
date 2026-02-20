@@ -21,6 +21,7 @@ import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaUserEdit } from "react-icons/fa";
 import { FaRegCircleUser } from "react-icons/fa6";
+import { FcGoogle } from "react-icons/fc";
 import { MdEdit, MdKey, MdLock, MdMenu, MdVerifiedUser } from "react-icons/md";
 
 /**
@@ -45,6 +46,10 @@ const Profile = () => {
     useState<boolean>(false);
   const [isDeleteAccountModalOpen, setDeleteAccountModalOpen] =
     useState<boolean>(false);
+
+  // Check which authentication providers the user has (local or Google)
+  const hasLocal = user?.providers.includes("local");
+  const hasGoogle = user?.providers.includes("google");
 
   // Form state variables for user input
   const [fullName, setFullName] = useState<string | undefined>(user?.fullName);
@@ -219,7 +224,9 @@ const Profile = () => {
                 if (confirmError) toast.error(confirmError);
                 return;
               }
-              updateUser({ oldPassword, newPassword }).then((successful) => {
+              updateUser(
+                hasLocal ? { oldPassword, newPassword } : { newPassword },
+              ).then((successful) => {
                 if (successful) {
                   setChangePasswordModalOpen(false);
                   setOldPassword("");
@@ -229,15 +236,17 @@ const Profile = () => {
               });
             }}
           >
-            <InputField
-              icon={<MdKey size={24} className="rotate-90" />}
-              type="password"
-              placeholder="Enter old password"
-              bgColorClass="bg-white"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value as string)}
-              required
-            />
+            {hasLocal && (
+              <InputField
+                icon={<MdKey size={24} className="rotate-90" />}
+                type="password"
+                placeholder="Enter old password"
+                bgColorClass="bg-white"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value as string)}
+                required
+              />
+            )}
             <InputField
               icon={<MdLock size={24} />}
               type="password"
@@ -474,6 +483,20 @@ const Profile = () => {
                 <h2 className="mt-4 text-primary font-semibold text-lg">
                   {fullName}
                 </h2>
+                <div className="flex flex-col items-center gap-2 mt-1 text-sm text-gray-500">
+                  {hasGoogle && (
+                    <div className="flex items-center">
+                      <FcGoogle size={16} className="mr-1" />
+                      Google
+                    </div>
+                  )}
+                  {hasLocal && (
+                    <div className="flex items-center">
+                      <span className="mr-1 font-bold">@</span>
+                      Email & Password
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Action buttons for profile management */}
@@ -484,25 +507,37 @@ const Profile = () => {
                 <FaUserEdit size={24} className="mr-3" aria-label="edit-name" />
                 <p className="text-sm bg-transparent outline-none">Edit Name</p>
               </button>
-              <button
-                onClick={() => setEditEmailModalOpen(true)}
-                className="w-1/2 bg-white rounded-xl flex items-center shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-2 my-2"
-              >
-                <FaUserEdit
-                  size={24}
-                  className="mr-3"
-                  aria-label="edit-email"
-                />
-                <p className="text-sm bg-transparent outline-none">
-                  Edit Email
-                </p>
-              </button>
-              <button
-                onClick={() => setChangePasswordModalOpen(true)}
-                className="w-1/2 bg-tertiary text-sm font-bold text-center rounded-xl shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-3 my-2"
-              >
-                Change Password
-              </button>
+              {user?.providers.includes("local") && (
+                <button
+                  onClick={() => setEditEmailModalOpen(true)}
+                  className="w-1/2 bg-white rounded-xl flex items-center shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-2 my-2"
+                >
+                  <FaUserEdit
+                    size={24}
+                    className="mr-3"
+                    aria-label="edit-email"
+                  />
+                  <p className="text-sm bg-transparent outline-none">
+                    Edit Email
+                  </p>
+                </button>
+              )}
+              {hasLocal && (
+                <button
+                  onClick={() => setChangePasswordModalOpen(true)}
+                  className="w-1/2 bg-tertiary text-sm font-bold text-center rounded-xl shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-3 my-2"
+                >
+                  Change Password
+                </button>
+              )}
+              {!hasLocal && hasGoogle && (
+                <button
+                  onClick={() => setChangePasswordModalOpen(true)}
+                  className="w-1/2 bg-tertiary text-sm font-bold text-center rounded-xl shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-3 my-2"
+                >
+                  Set Password
+                </button>
+              )}
               <button
                 onClick={() => setDeleteAccountModalOpen(true)}
                 className="w-1/2 bg-primary text-sm font-bold text-center rounded-xl shadow transition hover:cursor-pointer hover:opacity-85 px-4 py-3 my-2"

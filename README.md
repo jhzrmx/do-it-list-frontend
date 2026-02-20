@@ -18,7 +18,7 @@ Designed with scalability, maintainability, and production-readiness in mind.
 
 ## 📦 Features
 
-- 🔐 Authentication (Login, Sign Up, Logout)
+- 🔐 Authentication (Login, Google, Sign Up, Logout)
 - 🔁 JWT-based session handling
 - 🔒 Protected & Public-only routes
 - 📝 Create, update, delete todos

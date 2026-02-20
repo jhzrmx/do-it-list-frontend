@@ -3,4 +3,5 @@ export default interface User {
   email: string;
   fullName: string;
   imageUrl: string | null;
+  providers: ("local" | "google")[];
 }
