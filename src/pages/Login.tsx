@@ -2,11 +2,11 @@ import axiosInstance from "@/axios/axios-instance";
 import InputField from "@/components/InputField";
 import PrimaryButton from "@/components/PrimaryButton";
 import type { AxiosError } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import { MdEmail, MdKey } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 
 // Login component handles user authentication by providing a form for email and password login
@@ -17,6 +17,32 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   // State for managing loading state during login process
   const [isLoading, setLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  // Handle OAuth callback
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    const error = urlParams.get("error");
+
+    if (token) {
+      // Store token in localStorage or handle as needed
+      localStorage.setItem("authToken", token);
+      // Clear URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+      // Redirect to home
+      navigate("/");
+    } else if (error) {
+      toast.error("Google login failed. Please try again.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [navigate]);
+
+  // Handle Google OAuth login
+  const handleGoogleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+  };
 
   // Handles the form submission for user login
   // Prevents default form behavior, sets loading state, and attempts to authenticate the user
@@ -103,9 +129,9 @@ const Login = () => {
               </form>
               {/* Divider */}
               <p className="w-full m-auto text-center my-2">OR</p>
-              {/* Google login button (placeholder) */}
+              {/* Google login button */}
               <button
-                onClick={() => toast.success("Coming soon!")}
+                onClick={handleGoogleLogin}
                 className="w-full bg-secondary rounded-xl flex items-center hover:cursor-pointer hover:opacity-85 px-4 py-2 my-4"
               >
                 <FcGoogle size={24} className="mr-3" />
